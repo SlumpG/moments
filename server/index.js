@@ -19,7 +19,7 @@ app.get("/api", (req, res) => {
   res.send("Wellcome to memo API");
 });
 const CONNECTION_URL = process.env.CONNECTION_URL;
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 8080;
 
 mongoose
   .connect(CONNECTION_URL, { useNewUrlParser: true, useUnifiedTopology: true })
