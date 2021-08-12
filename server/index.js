@@ -3,7 +3,9 @@ import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
 import postsRouter from "./routes/posts.js";
+import path from 'path';
 
+const __dirname = path.resolve()
 const app = express();
 dotenv.config();
 
@@ -13,7 +15,7 @@ app.use(cors());
 
 app.use("/api/posts", postsRouter);
 
-app.get("/", (req, res) => {
+app.get("/api", (req, res) => {
   res.send("Wellcome to memo API");
 });
 const CONNECTION_URL = process.env.CONNECTION_URL;
@@ -28,9 +30,9 @@ mongoose
 
 mongoose.set("useFindAndModify", false);
 
-if (process.env.NODE_ENV === "production") {
+// if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "../client/build")));
   app.get("*", (req, res) => {
     res, sendFile(path.join(__dirname, "../client/build", "index.html"));
   });
-}
+// }
