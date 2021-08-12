@@ -43,6 +43,6 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "https://moment-pro.herokuapp.com/api/posts/"
+  "proxy": "https://moment-pro.herokuapp.com/"
 
 }
