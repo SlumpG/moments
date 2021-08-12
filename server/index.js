@@ -15,9 +15,7 @@ app.use(cors());
 
 app.use("/api/posts", postsRouter);
 
-app.get("/api", (req, res) => {
-  res.send("Wellcome to memo API");
-});
+
 const CONNECTION_URL = process.env.CONNECTION_URL;
 const PORT = process.env.PORT || 8080;
 
