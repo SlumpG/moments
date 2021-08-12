@@ -24,7 +24,7 @@ mongoose
   .then(() =>
     app.listen(PORT, () => console.log(`server is runing on ${PORT}`))
   )
-  .catch((error) => console.log(error.message));
+  .catch((error) => console.log(error));
 
 mongoose.set("useFindAndModify", false);
 
