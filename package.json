@@ -6,8 +6,8 @@
   "type": "module",
   "scripts": {
     "setup": "npm install && cd client && npm install",
-    "start": "node server/server.js",
-    "server": "nodemon server/server.js",
+    "start": "node index/index.js",
+    "server": "nodemon index/index.js",
     "client": "cd client && npm run start",
     "dev": "concurrently --kill-others-on-fail \"npm run server\" \"npm run client\"",
     "heroku-postbuild": "cd client && npm install --only=dev && npm install && npm run build"
