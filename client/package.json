@@ -43,6 +43,6 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "https://localhost:8080/api/posts"
+  "proxy": "https://localhost:8080/api/posts/"
 
 }
