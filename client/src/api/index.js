@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const url = "https://memo-mern-project.herokuapp.com/posts";
+const url = "https://moment-pro.herokuapp.com/";
 
 export const fetchPosts = () => axios.get(url);
 export const createPost = (newPost) => axios.post(url, newPost);
