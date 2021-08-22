@@ -1,35 +1,51 @@
-import React, { useState , useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { TextField, Button, Typography, Paper } from "@material-ui/core";
 import FileBase from "react-file-base64";
 import { useDispatch, useSelector } from "react-redux";
-import { createPost ,updatePost} from "../../actions/posts";
+import { createPost, updatePost } from "../../actions/posts";
 import useStyles from "./style";
 
-
-const Form = ({currentId ,setCurrentId}) => {
-  const [postData, setPostData] = useState({creator: "",title: "",message: "",tags: "",selectedFile: ""});
-  const post = useSelector((state) => currentId?state.posts.find((p)=>p._id=== currentId):null)
+const Form = ({ currentId, setCurrentId }) => {
+  const [postData, setPostData] = useState({
+    title: "",
+    message: "",
+    tags: "",
+    selectedFile: "",
+  });
+  const post = useSelector((state) =>
+    currentId ? state.posts.find((p) => p._id === currentId) : null
+  );
   const classes = useStyles();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+  const user = JSON.parse(localStorage.getItem("profile"));
 
-  useEffect(()=>{
-    if(post) setPostData(post);
-  },[post])
-
+  useEffect(() => {
+    if (post) setPostData(post);
+  }, [post]);
 
   const handleSubmit = (e) => {
-     e.preventDefault();  
- if(currentId){
-   dispatch(updatePost(currentId,postData))
- }else{
-  dispatch(createPost(postData))
-}     
-clear() 
-};
+    e.preventDefault();
+    if (currentId) {
+      dispatch(
+        updatePost(currentId, { ...postData, name: user?.result?.name })
+      );
+    } else {
+      dispatch(createPost({ ...postData, name: user?.result?.name }));
+    }
+    clear();
+  };
+  if (!user?.result?.name) {
+    return (
+      <Paper className={classes.paper}>
+        <Typography variant="h6">
+          Please Sign In to Share and like Moments.
+        </Typography>
+      </Paper>
+    );
+  }
   const clear = () => {
     setCurrentId(null);
-    setPostData({creator: "",title: "",message: "",tags: "",selectedFile: ""})
-
+    setPostData({ title: "", message: "", tags: "", selectedFile: "" });
   };
   return (
     <Paper className={classes.paper}>
@@ -39,26 +55,16 @@ clear()
         className={`${classes.root} ${classes.form}`}
         onSubmit={handleSubmit}
       >
-        <Typography variant="h6">{currentId ?'Editing': 'Creating'} a Moment</Typography>
-        <TextField
-          name="creator"
-          variant="outlined"
-          label="Creator"
-          fullWidth
-          value={postData.creator}
-          onChange={(e) =>
-            setPostData({ ...postData, creator: e.target.value })
-          }
-        />
+        <Typography variant="h6">
+          {currentId ? "Editing" : "Creating"} a Moment
+        </Typography>
         <TextField
           name="title"
           variant="outlined"
           label="Title"
           fullWidth
           value={postData.title}
-          onChange={(e) =>
-            setPostData({ ...postData, title: e.target.value })
-          }
+          onChange={(e) => setPostData({ ...postData, title: e.target.value })}
         />
         <TextField
           name="message"

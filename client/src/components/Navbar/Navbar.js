@@ -1,30 +1,36 @@
 import React, { useEffect, useState } from "react";
-import { Link, useHistory ,useLocation} from "react-router-dom";
+import { Link, useHistory, useLocation } from "react-router-dom";
 import { AppBar, Typography, Toolbar, Button, Avatar } from "@material-ui/core";
 import { useDispatch } from "react-redux";
+import { decode } from "jsonwebtoken";
 import moments from "../../images/moments.svg";
 import useStyles from "./style";
+import { LOGOUT } from "../../constans/actionTypes";
 
 const Navbar = () => {
   const classes = useStyles();
-  const [user,setUser]= useState(JSON.parse(localStorage.getItem('profile')))
-  const dispatch = useDispatch()
-  const history = useHistory()
-  const location = useLocation()
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem("profile")));
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const location = useLocation();
 
-  const logout =()=>{
-    dispatch({type:'LOGOUT'})
+  const logout = () => {
+    dispatch({ type: LOGOUT });
 
-    history.push('/')
+    history.push("/");
 
-    setUser(null)
-  }
+    setUser(null);
+  };
 
   useEffect(() => {
-    const token = user?.token
+    const token = user?.token;
+    if (token) {
+      const decodedToken = decode(token);
+      if (decodedToken.exp * 1000 < new Date().getTime()) logout();
+    }
 
-    setUser(JSON.parse(localStorage.getItem('profile')))
-  }, [location])
+    setUser(JSON.parse(localStorage.getItem("profile")));
+  }, [location]);
   return (
     <AppBar className={classes.appBar} position="static" color="inherit">
       <div className={classes.brandContainer}>
@@ -61,9 +67,9 @@ const Navbar = () => {
               variant="contained"
               className={classes.logout}
               color="secondary"
-            onClick={logout}
-           >
-              Logout
+              onClick={logout}
+            >
+              LOGOUT
             </Button>
           </div>
         ) : (
