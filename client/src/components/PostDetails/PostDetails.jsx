@@ -61,7 +61,7 @@ const PostDetalis = () => {
                 <Typography gutterBottom variant='subtitle2'>{name}</Typography>
                 <Typography gutterBottom variant='subtitle2'>{message}</Typography>
                 <Typography gutterBottom variant='subtitle1'>Likes:{likes.length}</Typography>
-                <img src={selectedFile || 'https://user-images.githubusercontent.com/194400/49531010-48dad180-f8b1-11e8-8d89-1e61320e1d82.png'} width="200px" alt="image" />
+                <img src={selectedFile || 'https://user-images.githubusercontent.com/194400/49531010-48dad180-f8b1-11e8-8d89-1e61320e1d82.png'} width="200px" alt={title} />
                 </div>
             ))}
           </div>
