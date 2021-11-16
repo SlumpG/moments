@@ -4,6 +4,7 @@ import FileBase from "react-file-base64";
 import { useDispatch, useSelector } from "react-redux";
 import { createPost, updatePost } from "../../actions/posts";
 import useStyles from "./style";
+import { useHistory } from "react-router-dom";
 
 const Form = ({ currentId, setCurrentId }) => {
   const [postData, setPostData] = useState({
@@ -13,12 +14,12 @@ const Form = ({ currentId, setCurrentId }) => {
     selectedFile: "",
   });
   const post = useSelector((state) =>
-    currentId ? state.posts.find((p) => p._id === currentId) : null
+    currentId ? state.posts.posts.find((p) => p._id === currentId) : null
   );
   const classes = useStyles();
   const dispatch = useDispatch();
   const user = JSON.parse(localStorage.getItem("profile"));
-
+const history = useHistory()
   useEffect(() => {
     if (post) setPostData(post);
   }, [post]);
@@ -29,10 +30,12 @@ const Form = ({ currentId, setCurrentId }) => {
       dispatch(
         updatePost(currentId, { ...postData, name: user?.result?.name })
       );
+      clear();
     } else {
-      dispatch(createPost({ ...postData, name: user?.result?.name }));
+      dispatch(createPost({ ...postData, name: user?.result?.name },history));
+      clear();
     }
-    clear();
+    
   };
   if (!user?.result?.name) {
     return (
@@ -48,7 +51,7 @@ const Form = ({ currentId, setCurrentId }) => {
     setPostData({ title: "", message: "", tags: "", selectedFile: "" });
   };
   return (
-    <Paper className={classes.paper}>
+    <Paper className={classes.paper} elevation={6} >
       <form
         autoComplete="off"
         noValidate
@@ -70,6 +73,8 @@ const Form = ({ currentId, setCurrentId }) => {
           name="message"
           variant="outlined"
           label="Message"
+          multiline
+          rows={3}
           fullWidth
           value={postData.message}
           onChange={(e) =>
@@ -79,7 +84,7 @@ const Form = ({ currentId, setCurrentId }) => {
         <TextField
           name="tags"
           variant="outlined"
-          label="Tags"
+          label="Tags (i.e: life,love)"
           fullWidth
           value={postData.tags}
           onChange={(e) =>
