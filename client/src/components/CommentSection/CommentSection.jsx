@@ -38,7 +38,7 @@ const CommentSection = ({ post }) => {
         {user.result.name && (
           <div style={{ width: "70%" }}>
             <Typography gutterBottom variant="h6">
-              write a comment
+              Write a comment
             </Typography>
             <TextField
               fullWidth
