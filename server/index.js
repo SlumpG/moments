@@ -13,8 +13,8 @@ dotenv.config();
 const CONNECTION_URL = process.env.CONNECTION_URL;
 const PORT = process.env.PORT || 9000;
 
-app.use(express.json({ limit: "30mb", extended: true }));
-app.use(express.urlencoded({ limit: "30mb", extended: true }));
+app.use(express.json({extended: true }));
+app.use(express.urlencoded({extended: true }));
 app.use(cors());
 
 app.use("/posts", postsRouter);
