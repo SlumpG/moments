@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "http://localhost:9000/api",
+  baseURL: "https://moment-pro.herokuapp.com/api",
 });
 API.interceptors.request.use((req) => {
   if (localStorage.getItem("profile")) {
