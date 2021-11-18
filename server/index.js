@@ -17,8 +17,8 @@ app.use(express.json({extended: true }));
 app.use(express.urlencoded({extended: true }));
 app.use(cors());
 
-app.use("/posts", postsRouter);
-app.use("/user", userRouter);
+app.use("/api/posts", postsRouter);
+app.use("/api/user", userRouter);
 
 mongoose
   .connect(CONNECTION_URL, { useNewUrlParser: true, useUnifiedTopology: true })
