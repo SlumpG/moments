@@ -35,7 +35,7 @@ const CommentSection = ({ post }) => {
           ))}
           <div ref={commentRef}></div>
         </div>
-        {user.result.name && (
+        {user?.result?.name && (
           <div style={{ width: "70%" }}>
             <Typography gutterBottom variant="h6">
               Write a comment
