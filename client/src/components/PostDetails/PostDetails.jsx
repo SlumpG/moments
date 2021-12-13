@@ -39,6 +39,7 @@ const PostDetalis = () => {
   }
   const openPost = (_id) => history.push(`/posts/${_id}`);
   const recommendedPosts = posts.filter(({ _id }) => _id !== post._id);
+  const isRecomendedPosts = !!recommendedPosts.length;
   return (
     <Paper style={{ padding: "20px", borderRadius: "15px" }} elevation={6}>
       <div className={classes.card}>
@@ -76,7 +77,7 @@ const PostDetalis = () => {
           />
         </div>
       </div>
-      {!!recommendedPosts.length && (
+      {isRecomendedPosts && (
         <div className={classes.section}>
           <Typography gutterBottom variant="h5">
             You might also like:

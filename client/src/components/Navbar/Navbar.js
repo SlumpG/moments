@@ -16,12 +16,10 @@ const Navbar = () => {
 
   const logout = () => {
     dispatch({ type: LOGOUT });
-
-    history.push("/");
-
     setUser(null);
+    history.push("/");
   };
-
+  console.log(user);
   useEffect(() => {
     const token = user?.token;
     if (token) {
@@ -34,12 +32,7 @@ const Navbar = () => {
   return (
     <AppBar className={classes.appBar} position="static" color="inherit">
       <Link to="/" className={classes.brandContainer}>
-        <Typography
-          
-          className={classes.heading}
-          variant="h1"
-          align="center"
-        >
+        <Typography className={classes.heading} variant="h1" align="center">
           Moments
         </Typography>
         <img

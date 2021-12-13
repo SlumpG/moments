@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
 import PostMessage from "../models/postMessage.js";
-
+import performance from "perf_hooks";
 export const getPosts = async (req, res) => {
   const { page } = req.query;
   try {
-    const LIMIT = 8;
+    const LIMIT = 4;
     const startIndex = (Number(page) - 1) * LIMIT;
     const total = await PostMessage.countDocuments({});
 
@@ -13,13 +13,11 @@ export const getPosts = async (req, res) => {
       .limit(LIMIT)
       .skip(startIndex);
 
-    res
-      .status(200)
-      .json({
-        data: posts,
-        currentPage: Number(page),
-        numberOfPages: Math.ceil(total / LIMIT),
-      });
+    res.status(200).json({
+      data: posts,
+      currentPage: Number(page),
+      numberOfPages: Math.ceil(total / LIMIT),
+    });
   } catch (error) {
     res.status(404).json({ message: error });
   }
@@ -29,7 +27,7 @@ export const getPostsBySearch = async (req, res) => {
   const { searchQuery, tags } = req.query;
   try {
     const title = new RegExp(searchQuery, "i");
-    
+
     const posts = await PostMessage.find({
       $or: [{ title }, { tags: { $in: tags.split(",") } }],
     });
@@ -83,26 +81,35 @@ export const deletePost = async (req, res) => {
 
 export const likePost = async (req, res) => {
   const { id } = req.params;
-
-  if (!req.userId) return res.json({ message: "Unauthenticated" });
+  const { isLiked } = req.body;
+  console.log(isLiked);
+  if (!req.userId) {
+    return res.json({ message: "Unauthenticated" });
+  }
 
   if (!mongoose.Types.ObjectId.isValid(id))
-    return res.status(404).send("No Post With That ID");
+    return res.status(404).send(`No post with id: ${id}`);
 
   const post = await PostMessage.findById(id);
 
-  const index = post.likes.findIndex((id) => id === String(req.userId));
-  if (index === -1) {
+  if (isLiked) {
     post.likes.push(req.userId);
   } else {
-    post.likes.filter((id) => id !== String(req.userId));
+    post.likes = post.likes.filter((id) => id !== String(req.userId));
   }
+
   const updatedPost = await PostMessage.findByIdAndUpdate(id, post, {
     new: true,
   });
 
-  res.json(updatedPost);
+  res.status(200).json(updatedPost);
 };
+
+
+// const latestReq = req
+// if (latestReq.date > currentReq)
+
+
 
 export const getPost = async (req, res) => {
   const { id } = req.params;
@@ -118,15 +125,16 @@ export const getPost = async (req, res) => {
 export const commentPost = async (req, res) => {
   const { id } = req.params;
   const { finalComment } = req.body;
-try {
-   const post = await PostMessage.findById(id)
+  try {
+    const post = await PostMessage.findById(id);
 
-  post.comments.push(finalComment)
-  const updatedPost = await PostMessage.findByIdAndUpdate(id,post,{new:true})
+    post.comments.push(finalComment);
+    const updatedPost = await PostMessage.findByIdAndUpdate(id, post, {
+      new: true,
+    });
 
-  res.status(201).json(updatedPost)
-} catch (error) {
-  console.log(error.message);
-}
- 
+    res.status(200).json(updatedPost);
+  } catch (error) {
+    console.log(error.message);
+  }
 };
