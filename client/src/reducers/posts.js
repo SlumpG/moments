@@ -8,6 +8,7 @@ import {
   STOP_LOADING,
   FETCH_POST,
   COMMENT,
+  LIKE_POST
 } from "../constans/actionTypes";
 
 const reducer = (state = { isLoading: true, posts: [] }, action) => {
@@ -30,6 +31,13 @@ const reducer = (state = { isLoading: true, posts: [] }, action) => {
       return {
         ...state,
         posts: state.posts.filter((post) => post._id !== action.payload),
+      };
+      case LIKE_POST:
+      return {
+        ...state,
+        posts: state.posts.map((post) => 
+          post._id === action.payload._id ? action.payload : post
+        ),
       };
     case UPDATE:
       return {

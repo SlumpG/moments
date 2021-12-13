@@ -7,7 +7,8 @@ import {
   CREATE,
   DELETE,
   FETCH_POST,
-  COMMENT
+  COMMENT,
+  LIKE_POST
 } from "../constans/actionTypes";
 import * as api from "../api";
 
@@ -15,8 +16,6 @@ export const getPosts = (page) => async (dispatch) => {
   try {
     dispatch({ type: START_LOADING });
     const { data } = await api.fetchPosts(page);
-
-    console.log(data);
 
     dispatch({ type: FETCH_ALL, payload: data });
     dispatch({ type: STOP_LOADING });
@@ -65,6 +64,8 @@ export const createPost = (post, history) => async (dispatch) => {
 export const updatePost = (id, post) => async (dispatch) => {
   try {
     const { data } = await api.updatePost(id, post);
+    console.log("update",data);
+
     dispatch({ type: UPDATE, payload: data });
   } catch (error) {
     console.log(error);
@@ -79,10 +80,16 @@ export const deletePost = (id) => async (dispatch) => {
   }
 };
 
-export const likePost = (id) => async (dispatch) => {
+export const likePost = (id,isLiked) => async (dispatch) => {
   try {
-    const { data } = await api.likePost(id);
-    dispatch({ type: UPDATE, payload: data });
+   // dispatch({ type: LIKE_POST, payload: data });
+    const t1 = performance.now()
+    const { data } = await api.likePost(id,isLiked);
+    const t2 = performance.now()
+
+    console.log("like",t2-t1);
+    
+    dispatch({ type: LIKE_POST, payload: data });
   } catch (error) {
     console.log(error);
   }

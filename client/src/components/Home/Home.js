@@ -31,7 +31,7 @@ const Home = () => {
   const searchQuery = query.get("searchQuery");
   const [search, setSearch] = useState("");
   const [tags, setTags] = useState([]);
-
+const canPaginate = !searchQuery && !tags.length 
   const searchPost = () => {
     if (search.trim() || tags) {
       dispatch(getPostsBySearch({ search, tags: tags.join(",") }));
@@ -102,7 +102,7 @@ const Home = () => {
               </Button>
             </AppBar>
             <Form currentId={currentId} setCurrentId={setCurrentId} />
-            {!searchQuery && !tags.length && (
+            {canPaginate && (
               <Paper className={classes.pagination} elevation={6}>
                 <Paginattion page={page} />
               </Paper>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
   Card,
   CardActions,
@@ -8,60 +8,41 @@ import {
   Typography,
   ButtonBase,
 } from "@material-ui/core";
-import ThumbUpAltIcon from "@material-ui/icons/ThumbUpAlt";
-import ThumbUpAltOutlined from "@material-ui/icons/ThumbUpAltOutlined";
 import DeleteIcon from "@material-ui/icons/Delete";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import moment from "moment";
 import useStyles from "./style";
 import { useDispatch } from "react-redux";
 import { deletePost, likePost } from "../../../actions/posts";
-import { useHistory } from "react-router";
+import { useHistory } from "react-router-dom";
+import debounce from "lodash.debounce";
+import Likes from "../../Likes/Likes";
 
 const Post = ({ post, setCurrentId }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const history = useHistory();
   const user = JSON.parse(localStorage.getItem("profile"));
-  const [likes, setLikes] = useState(post?.likes);
-
+  const [likes, setLikes] = useState(post.likes);
+  
   const userId = user?.result?.googleId || user?.result?._id;
-  const hasLikedThePost = likes.find((like) => like === userId);
+  const hasLikedThePost = likes.includes(userId);
 
   const handleLikeClick = () => {
-    dispatch(likePost(post._id));
+    debounceForLike(hasLikedThePost);
     if (hasLikedThePost) {
-      setLikes(post.likes.filter((id) => id !== userId));
+      setLikes(likes.filter((id) => id !== userId));
     } else {
-      setLikes([...post.likes,userId])
+      setLikes([...likes, userId]);
+      
     }
   };
-
-  const Likes = () => {
-    if (likes.length > 0) {
-      return hasLikedThePost ? (
-        <>
-          <ThumbUpAltIcon fontSize="small" />
-          &nbsp;
-          {likes.length > 2
-            ? `You and ${likes.length - 1} others`
-            : `${likes.length} like${likes.length > 1 ? "s" : ""}`}
-        </>
-      ) : (
-        <>
-          <ThumbUpAltOutlined fontSize="small" />
-          &nbsp;{likes.length} {likes.length === 1 ? "Like" : "Likes"}
-        </>
-      );
-    }
-
-    return (
-      <>
-        <ThumbUpAltOutlined fontSize="small" />
-        &nbsp;Like
-      </>
-    );
-  };
+  const debounceForLike = useCallback(
+    debounce((isLiked) => {
+      dispatch(likePost(post._id, !isLiked));
+    }, 1000),
+    []
+  );
 
   const openPost = () => history.push(`/posts/${post._id}`);
 
@@ -82,7 +63,7 @@ const Post = ({ post, setCurrentId }) => {
             {moment(post.createdAt).fromNow()}
           </Typography>
         </div>
-        {(userId === post?.creator) && (
+        {userId === post?.creator && (
           <div className={classes.overlay2} name="edit">
             <Button
               onClick={(e) => {
@@ -92,7 +73,7 @@ const Post = ({ post, setCurrentId }) => {
               style={{ color: "white" }}
               size="small"
             >
-              <MoreHorizIcon fontSize="default" />
+              <MoreHorizIcon fontSize="medium" />
             </Button>
           </div>
         )}
@@ -117,9 +98,10 @@ const Post = ({ post, setCurrentId }) => {
           disabled={!user?.result}
           onClick={handleLikeClick}
         >
-          <Likes />
+          <Likes likes={likes} hasLikedThePost={hasLikedThePost}/>
         </Button>
-        {(userId === post?.creator ) && (
+        likesdb :{post.likes.length}
+        {userId === post?.creator && (
           <Button
             size="small"
             color="secondary"
